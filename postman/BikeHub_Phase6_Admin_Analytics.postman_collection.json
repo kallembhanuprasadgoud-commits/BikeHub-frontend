@@ -1,0 +1,218 @@
+{
+  "info": {
+    "name": "BikeHub - Phase 6 Admin & Analytics",
+    "description": "Postman collection for testing Admin Analytics Dashboard, User Moderation, Seller Verification, and Platform Metrics",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Analytics Dashboard",
+      "item": [
+        {
+          "name": "1. Get Platform Analytics (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/analytics",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "analytics"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Moderation",
+      "item": [
+        {
+          "name": "1. Get All Users (Filtered by Role/Status)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/users?role=SELLER&status=ACTIVE&page=0&size=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "users"],
+              "query": [
+                {"key": "role", "value": "SELLER"},
+                {"key": "status", "value": "ACTIVE"},
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "2. Block User Account",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"BLOCKED\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/users/4/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "users", "4", "status"]
+            }
+          }
+        },
+        {
+          "name": "3. Unblock User Account",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/users/4/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "users", "4", "status"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Seller Verification",
+      "item": [
+        {
+          "name": "1. Submit Verification Documents (Seller)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{seller_jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shopName\": \"Apex Superbikes Studio\",\n  \"address\": \"Plot 24, Baner Main Road\",\n  \"city\": \"Pune\",\n  \"documentUrl\": \"https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/seller/verification",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "seller", "verification"]
+            }
+          }
+        },
+        {
+          "name": "2. Check Verification Status (Seller)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{seller_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/seller/verification",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "seller", "verification"]
+            }
+          }
+        },
+        {
+          "name": "3. Get Pending Verifications (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/sellers/pending?page=0&size=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "sellers", "pending"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "4. Approve Seller Verification (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"VERIFIED\",\n  \"adminRemarks\": \"Dealer trade license and showroom verified successfully\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/sellers/1/verify",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "sellers", "1", "verify"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

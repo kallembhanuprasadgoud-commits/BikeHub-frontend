@@ -1,0 +1,220 @@
+{
+  "info": {
+    "name": "BikeHub - Phase 3 Bikes, Wishlist & Uploads",
+    "description": "Postman collection for testing Bike Listings, Multi-criteria Filtering, Comparison, Image Upload, and Wishlist",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public Bike Discovery",
+      "item": [
+        {
+          "name": "1. Search Bikes (All Available)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/bikes?page=0&size=10&sortBy=price&sortDir=asc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "bikes"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"},
+                {"key": "sortBy", "value": "price"},
+                {"key": "sortDir", "value": "asc"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "2. Filter Bikes by Brand & City",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/bikes?brand=Royal%20Enfield&city=Pune&minPrice=100000&maxPrice=250000",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "bikes"],
+              "query": [
+                {"key": "brand", "value": "Royal Enfield"},
+                {"key": "city", "value": "Pune"},
+                {"key": "minPrice", "value": "100000"},
+                {"key": "maxPrice", "value": "250000"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "3. Get Bike Details by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/bikes/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "bikes", "1"]
+            }
+          }
+        },
+        {
+          "name": "4. Compare Bikes (Side-by-Side)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/bikes/compare?ids=1,2,3",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "bikes", "compare"],
+              "query": [
+                {"key": "ids", "value": "1,2,3"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Seller Listings Management",
+      "item": [
+        {
+          "name": "1. Create New Bike Listing",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{seller_jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand\": \"Harley-Davidson\",\n  \"model\": \"X440 S\",\n  \"year\": 2023,\n  \"kmDriven\": 3500,\n  \"fuelType\": \"Petrol\",\n  \"engineCc\": 440,\n  \"condition\": \"EXCELLENT\",\n  \"price\": 270000.00,\n  \"description\": \"Matte Black Harley X440 with diamond-cut alloys, connected tech, eSIM navigation. Mint condition.\",\n  \"city\": \"Pune\",\n  \"imageUrls\": [\n    \"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800\",\n    \"https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800\"\n  ],\n  \"primaryImageIndex\": 0\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/bikes",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "bikes"]
+            }
+          }
+        },
+        {
+          "name": "2. Get My Seller Listings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{seller_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/bikes/my-listings?page=0&size=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "bikes", "my-listings"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "3. Update Bike Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{seller_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/bikes/1/status?status=SOLD",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "bikes", "1", "status"],
+              "query": [
+                {"key": "status", "value": "SOLD"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wishlist",
+      "item": [
+        {
+          "name": "1. Add to Wishlist",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/wishlist/3",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "wishlist", "3"]
+            }
+          }
+        },
+        {
+          "name": "2. Get My Wishlist",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/wishlist",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "wishlist"]
+            }
+          }
+        },
+        {
+          "name": "3. Remove from Wishlist",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/wishlist/3",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "wishlist", "3"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

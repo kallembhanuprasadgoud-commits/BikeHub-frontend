@@ -1,0 +1,230 @@
+{
+  "info": {
+    "name": "BikeHub - Phase 4 Orders & Payments",
+    "description": "Postman collection for testing Motorcycle Orders, Gateway Order Initiation, Payment Verification, and Order Lifecycle",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "1. Place New Order (Buyer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bikeId\": 3\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "orders"]
+            }
+          }
+        },
+        {
+          "name": "2. Get Order Details by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/orders/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "orders", "1"]
+            }
+          }
+        },
+        {
+          "name": "3. Get My Orders (Buyer)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/orders/my-orders?page=0&size=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "orders", "my-orders"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "4. Get Received Orders (Seller)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{seller_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/orders/seller-orders?page=0&size=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "orders", "seller-orders"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "5. Update Order Status to SHIPPED (Seller)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{seller_jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SHIPPED\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/orders/1/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "orders", "1", "status"]
+            }
+          }
+        },
+        {
+          "name": "6. Cancel Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/orders/2/cancel",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "orders", "2", "cancel"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "1. Create Payment Order (Initiate Gateway)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": 2\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/payments/create-order",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "payments", "create-order"]
+            }
+          }
+        },
+        {
+          "name": "2. Verify Payment (Complete Order & Mark Bike SOLD)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": 2,\n  \"gatewayPaymentId\": \"pay_test_RzP987654321\",\n  \"gatewayOrderId\": \"order_rzp_mock_demo\",\n  \"gatewaySignature\": \"sig_mock_demo_hash\",\n  \"method\": \"UPI\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/payments/verify",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "payments", "verify"]
+            }
+          }
+        },
+        {
+          "name": "3. Get Payment Details by Order ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/payments/order/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "payments", "order", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,264 @@
+{
+  "info": {
+    "name": "BikeHub - Phase 5 Chat, Reviews & Notifications",
+    "description": "Postman collection for testing WebSocket/REST Chat, Buyer Reviews & Ratings, and Real-Time Notifications",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Chat",
+      "item": [
+        {
+          "name": "1. Get or Create Chat Room",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bikeId\": 2\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/chat/rooms",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "chat", "rooms"]
+            }
+          }
+        },
+        {
+          "name": "2. Get User Chat Rooms",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/chat/rooms",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "chat", "rooms"]
+            }
+          }
+        },
+        {
+          "name": "3. Get Room Messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/chat/rooms/1/messages",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "chat", "rooms", "1", "messages"]
+            }
+          }
+        },
+        {
+          "name": "4. Send Message (REST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomId\": 1,\n  \"content\": \"Hello, can we arrange an inspection this Sunday afternoon?\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/chat/messages",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "chat", "messages"]
+            }
+          }
+        },
+        {
+          "name": "5. Mark Room Messages as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{seller_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/chat/rooms/1/read",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "chat", "rooms", "1", "read"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "1. Submit Review (Buyer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sellerId\": 2,\n  \"bikeId\": 3,\n  \"rating\": 5,\n  \"comment\": \"Fantastic seller! Bike was delivered exactly as described with transparent paperwork.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/reviews",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "reviews"]
+            }
+          }
+        },
+        {
+          "name": "2. Get Seller Reviews & Rating Aggregate",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/reviews/seller/2",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "reviews", "seller", "2"]
+            }
+          }
+        },
+        {
+          "name": "3. Get Bike Reviews",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/reviews/bike/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "reviews", "bike", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "1. Get User Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{seller_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/notifications",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "notifications"]
+            }
+          }
+        },
+        {
+          "name": "2. Get Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{seller_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/notifications/unread-count",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "notifications", "unread-count"]
+            }
+          }
+        },
+        {
+          "name": "3. Mark Single Notification Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{seller_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/notifications/1/read",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "notifications", "1", "read"]
+            }
+          }
+        },
+        {
+          "name": "4. Mark All Notifications Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{seller_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/notifications/read-all",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "notifications", "read-all"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  # ----------------------------------------------------------------------
+  # Database Service: MySQL 8.0 with Schema Auto-Initialization
+  # ----------------------------------------------------------------------
+  mysql-db:
+    image: mysql:8.0
+    container_name: bikehub-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bikehub_db
+      MYSQL_USER: bikehub_user
+      MYSQL_PASSWORD: bikehub_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Auto-executes schema, tables, and seeded mock data on first launch
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - bikehub-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # ----------------------------------------------------------------------
+  # AI Microservice: Python Flask + Gunicorn on Port 5000
+  # ----------------------------------------------------------------------
+  bikehub-ai:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: bikehub-ai
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    networks:
+      - bikehub-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ----------------------------------------------------------------------
+  # Backend API: Spring Boot 3 + OpenJDK 17 on Port 8080
+  # ----------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bikehub-backend
+    restart: unless-stopped
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      bikehub-ai:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/bikehub_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: bikehub_user
+      SPRING_DATASOURCE_PASSWORD: bikehub_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      AI_SERVICE_URL: http://bikehub-ai:5000
+      JWT_SECRET: BikeHubSuperSecretSecurityKey2026WithAtLeast256BitsLength!
+      JWT_EXPIRATION_MS: 86400000
+    volumes:
+      - bikehub_uploads:/app/uploads
+    networks:
+      - bikehub-network
+
+  # ----------------------------------------------------------------------
+  # Frontend Client: React.js (Vite) + Nginx Reverse Proxy on Port 80
+  # ----------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bikehub-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      - "5173:80"
+    networks:
+      - bikehub-network
+
+# ----------------------------------------------------------------------
+# Named Volumes and Shared Bridge Network
+# ----------------------------------------------------------------------
+volumes:
+  mysql_data:
+    driver: local
+  bikehub_uploads:
+    driver: local
+
+networks:
+  bikehub-network:
+    driver: bridge

@@ -1,0 +1,155 @@
+{
+  "info": {
+    "name": "BikeHub - Phase 7 AI Features & Recommendations",
+    "description": "Postman collection for testing AI Price Suggestion, Image Condition Analysis, and Content-Based Recommendations",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Spring Boot AI Endpoints",
+      "item": [
+        {
+          "name": "1. Price Suggestion (Royal Enfield)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand\": \"Royal Enfield\",\n  \"model\": \"Classic 350\",\n  \"year\": 2022,\n  \"kmDriven\": 12000,\n  \"condition\": \"EXCELLENT\",\n  \"engineCc\": 349\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/ai/price-suggestion",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "ai", "price-suggestion"]
+            }
+          }
+        },
+        {
+          "name": "2. Price Suggestion (Yamaha R15)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand\": \"Yamaha\",\n  \"model\": \"YZF R15 V4\",\n  \"year\": 2023,\n  \"kmDriven\": 6000,\n  \"condition\": \"EXCELLENT\",\n  \"engineCc\": 155\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/ai/price-suggestion",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "ai", "price-suggestion"]
+            }
+          }
+        },
+        {
+          "name": "3. Image Condition Analysis",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:8080/api/ai/condition-analysis?imageUrl=https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=800",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "ai", "condition-analysis"],
+              "query": [
+                {"key": "imageUrl", "value": "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=800"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "4. Personalized Recommendations (Logged-In Buyer)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/recommendations?limit=6",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "recommendations"],
+              "query": [
+                {"key": "limit", "value": "6"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "5. Recommendations (Public / Cold Start)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/recommendations?limit=6",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "recommendations"],
+              "query": [
+                {"key": "limit", "value": "6"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Python AI Microservice (Port 5000)",
+      "item": [
+        {
+          "name": "1. Python Microservice Health",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:5000/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "2. Python Microservice Predict Price",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand\": \"KTM\",\n  \"model\": \"Duke 390\",\n  \"year\": 2021,\n  \"kmDriven\": 18000,\n  \"condition\": \"GOOD\",\n  \"engineCc\": 373\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/predict-price",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["predict-price"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
