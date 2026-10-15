@@ -20,9 +20,14 @@ export function SocketProvider({ children }) {
       return;
     }
 
+    const rawWsUrl = import.meta.env.VITE_WS_URL || import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL;
+    const wsEndpoint = rawWsUrl
+      ? (rawWsUrl.endsWith("/ws") ? rawWsUrl : `${rawWsUrl.replace(/\/$/, "").replace(/\/api$/, "")}/ws`)
+      : "/ws";
+
     // Initialize STOMP client with SockJS transport
     const client = new Client({
-      webSocketFactory: () => new SockJS("/ws"),
+      webSocketFactory: () => new SockJS(wsEndpoint),
       connectHeaders: {
         Authorization: `Bearer ${token}`,
       },
